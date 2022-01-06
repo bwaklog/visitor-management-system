@@ -57,7 +57,7 @@ def show_rec(aptname=str):
     records = cursor.fetchall()
     for record in records:
         name, house_no, reason, accreg, chk_ins = record[1], record[2], record[3], record[4], record[5]
-        print("Name :",name, " | House no :", house_no, " | Reason :", reason, '\n           ACCREG  CHK_INS \n       |-->',accreg, '      ',chk_ins)
+        print("Name :",name, " | House no :", house_no, " | Reason :", reason)#, '\n           ACCREG  CHK_INS \n       |-->',accreg, '      ',chk_ins)
 
 def remove(vname=str, vhouse=str, aptname=str):
     sr_query = 'SELECT * FROM datacamp.'+aptname+' WHERE name=\''+vname+'\' AND house_no=\''+vhouse+'\''
