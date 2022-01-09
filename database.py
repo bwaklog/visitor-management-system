@@ -1,11 +1,12 @@
 import mysql.connector as mysql
 from tkinter import simpledialog, messagebox
+import tkinter as tk
 # from tqdm import tqdm
 # import time
 
-'''
-Defining a database :db
-'''
+window = tk.Tk()
+window.withdraw()
+
 db = mysql.connect(
     host = 'localhost',
     user = 'root',
@@ -103,9 +104,10 @@ while True:
             # vname = input("Enter the Name of the person leaving : ")
             vname = simpledialog.askstring(title="Visiotr Details", prompt="Name of person leaving :")
             # vhouse = input("Enter the house visited : ")
-            vname = simpledialog.askstring(title="Visiotr Details", prompt="House visited :")
+            vhouse = simpledialog.askstring(title="Visiotr Details", prompt="House visited :")
             remove(vname=vname, vhouse=vhouse, aptname=aptselect)
         elif choice == 4:
             break  
         elif choice == 5:
             quit()
+    window.mainloop()
