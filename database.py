@@ -4,12 +4,27 @@ import mysql.connector as mysql
 
 '''
 Defining a database :db
-'''
+
 db = mysql.connect(
     host = 'localhost',
     user = 'root',
     passwd = '1029Adity@',
     database = 'datacamp'
+)
+'''
+
+with open('config.txt', 'r') as filer:
+    config = filer.readline()
+    filer.close()
+
+config.split('/')
+print(config[0], config[1], config[2], config[3])
+
+db = mysql.connect(
+    host = config[0],
+    user = config[1],
+    passwd = config[2],
+    database = config[3]
 )
 
 cursor = db.cursor()
