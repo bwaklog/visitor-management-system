@@ -1,13 +1,11 @@
-from turtle import clear
-import mysql.connector as mysql
 import os
-from tqdm import tqdm
+import mysql.connector as mysql
 from time import sleep
+from tkinter import simpledialog, messagebox
+import tkinter as tk
 
-
-'''
-Defining a database :db
-'''
+window = tk.Tk()
+window.withdraw()
 
 clear_console = lambda: os.system('cls' if os.name in ('nt', 'dos') else 'clear')
 clear_console()
@@ -16,8 +14,11 @@ with open('config.txt', 'r') as f:
     l = f.readline()
     l.strip('')
     l = l.split('/')
-
+    
 '''
+Defining a database 
+
+(Author Reference)
 db = mysql.connect(
     host = 'localhost',
     user = 'root',
@@ -25,7 +26,6 @@ db = mysql.connect(
     database = 'datacamp'
 )
 '''
-
 db = mysql.connect(
     host = l[0],
     user = l[1],
@@ -41,6 +41,7 @@ def crt_apt(aptname=str):
     cursor.execute(query)
     db.commit()
     print("Sucessfully created a table in database for apt :", aptname)
+    messagebox.showinfo(title="Querry Accepted", message="Sucessfully created a table in database for apt : " + aptname)
 
 # Function to check wether an apartment exists inside a database or not, and have operations follow it
 def chk_tbl(aptname=str):  # sourcery skip: remove-redundant-pass
@@ -54,7 +55,8 @@ def chk_tbl(aptname=str):  # sourcery skip: remove-redundant-pass
         show_rec(aptname=aptname)
     else:
         print(False)
-        choice = input("Do you want to create one(y/n)")
+        choice = simpledialog.askstring(title="Accept Entry", prompt="Do you want to create one(y/n)")
+        # choice = input("Do you want to create one(y/n)")
         if choice.lower() == 'y':
             crt_apt(aptname=aptname)
         else: 
@@ -92,7 +94,8 @@ def remove(vname=str, vhouse=str, aptname=str):
 
 
 while True:
-    aptselect = input("Enter the name of your apartment : ")
+    aptselect = simpledialog.askstring(title="Apartment" ,prompt="Enter the name of your apartment :")
+    # aptselect = input("Enter the name of your apartment : ")
     aptselect = aptselect.replace(" ", "")
 
     print(aptselect)
@@ -101,24 +104,32 @@ while True:
     sleep(1)
     clear_console()
     while True:
-        choice = int(input("1. Check existing tables \n2. Add Visitor \n3. Remove Visitor \n4. Change Apartment \n5.Quit \n>>>Enter your choice :"))
+        choice = simpledialog.askinteger(title="Option Select",prompt="1. Check existing tables \n2. Add Visitor \n3. Remove Visitor \n4. Change Apartment \n5.Quit \n>>>Enter your choice :")
+        # choice = int(input("1. Check existing tables \n2. Add Visitor \n3. Remove Visitor \n4. Change Apartment \n5.Quit \n>>>Enter your choice :"))
         if choice == 1:
             show_rec(aptname=aptselect)
         elif choice == 2:
-            vname = input("Enter the name of the visitor : ")
-            vhouse = input("Enter the house visiting : ")
-            vreason = input("Reason for visit : ")
-            accrej = input("Accept(y/n)")
+            vname = simpledialog.askstring(title="Visiotr Details", prompt="Enter the name of the visitor :")
+            # vname = input("Enter the name of the visitor : ")
+            vhouse = simpledialog.askstring(title="Visiotr Details", prompt="House visiting :")
+            # vhouse = input("Enter the house visiting : ")
+            vreason = simpledialog.askstring(title="Visiotr Details", prompt="Reason for visit :")
+            # vreason = input("Reason for visit : ")
+            accrej = simpledialog.askstring(title="Visiotr Details", prompt="(y)Accept Entry \n(n)Reject Entry :")
+            # accrej = input("Accept(y/n)")
             if accrej.lower() == "y":
                 vaccreg = 1
                 vchk_ins = 1
             add_visi(name=vname, house_no=vhouse, reason=vreason, accreg=vaccreg, chk_ins=vchk_ins, aptname=aptselect)
         elif choice == 3:
-            vname = input("Enter the Name of the person leaving : ")
-            vhouse = input("Enter the house visited : ")
+            # vname = input("Enter the Name of the person leaving : ")
+            vname = simpledialog.askstring(title="Visiotr Details", prompt="Name of person leaving :")
+            # vhouse = input("Enter the house visited : ")
+            vhouse = simpledialog.askstring(title="Visiotr Details", prompt="House visited :")
             remove(vname=vname, vhouse=vhouse, aptname=aptselect)
         elif choice == 4:
             break  
         elif choice == 5:
             clear_console()
             quit()
+    window.mainloop()
