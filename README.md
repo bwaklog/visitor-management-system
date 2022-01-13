@@ -1,4 +1,4 @@
-# visitor-management-system
+# visitor-management-system (version 2.0.0)
 💻 Visitor Management System, created for school project
 
 #### 👉 database.py(file) holds the source code for the VSM
