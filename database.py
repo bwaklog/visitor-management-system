@@ -1,17 +1,36 @@
+import os
 import mysql.connector as mysql
+from time import sleep
 from tkinter import simpledialog, messagebox
 import tkinter as tk
-# from tqdm import tqdm
-# import time
 
 window = tk.Tk()
 window.withdraw()
 
+clear_console = lambda: os.system('cls' if os.name in ('nt', 'dos') else 'clear')
+clear_console()
+
+with open('config.txt', 'r') as f:
+    l = f.readline()
+    l.strip('')
+    l = l.split('/')
+    
+'''
+Defining a database 
+
+(Author Reference)
 db = mysql.connect(
     host = 'localhost',
     user = 'root',
     passwd = '1029Adity@',
     database = 'datacamp'
+)
+'''
+db = mysql.connect(
+    host = l[0],
+    user = l[1],
+    passwd = l[2],
+    database = l[3]
 )
 
 cursor = db.cursor()
@@ -80,8 +99,10 @@ while True:
     aptselect = aptselect.replace(" ", "")
 
     print(aptselect)
-    # chk_tbl(aptname=aptselect)
     chk_tbl(aptname=aptselect)
+    print("[SERVER] : Loading database...")
+    sleep(1)
+    clear_console()
     while True:
         choice = simpledialog.askinteger(title="Option Select",prompt="1. Check existing tables \n2. Add Visitor \n3. Remove Visitor \n4. Change Apartment \n5.Quit \n>>>Enter your choice :")
         # choice = int(input("1. Check existing tables \n2. Add Visitor \n3. Remove Visitor \n4. Change Apartment \n5.Quit \n>>>Enter your choice :"))
@@ -109,5 +130,6 @@ while True:
         elif choice == 4:
             break  
         elif choice == 5:
+            clear_console()
             quit()
     window.mainloop()
