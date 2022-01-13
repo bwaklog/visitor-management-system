@@ -1,10 +1,23 @@
+from turtle import clear
 import mysql.connector as mysql
-# from tqdm import tqdm
-# import time
+import os
+from tqdm import tqdm
+from time import sleep
+
 
 '''
 Defining a database :db
+'''
 
+clear_console = lambda: os.system('cls' if os.name in ('nt', 'dos') else 'clear')
+clear_console()
+
+with open('config.txt', 'r') as f:
+    l = f.readline()
+    l.strip('')
+    l = l.split('/')
+
+'''
 db = mysql.connect(
     host = 'localhost',
     user = 'root',
@@ -13,18 +26,11 @@ db = mysql.connect(
 )
 '''
 
-with open('config.txt', 'r') as filer:
-    config = filer.readline()
-    filer.close()
-
-config.split('/')
-print(config[0], config[1], config[2], config[3])
-
 db = mysql.connect(
-    host = config[0],
-    user = config[1],
-    passwd = config[2],
-    database = config[3]
+    host = l[0],
+    user = l[1],
+    passwd = l[2],
+    database = l[3]
 )
 
 cursor = db.cursor()
@@ -90,8 +96,10 @@ while True:
     aptselect = aptselect.replace(" ", "")
 
     print(aptselect)
-    # chk_tbl(aptname=aptselect)
     chk_tbl(aptname=aptselect)
+    print("[SERVER] : Loading database...")
+    sleep(1)
+    clear_console()
     while True:
         choice = int(input("1. Check existing tables \n2. Add Visitor \n3. Remove Visitor \n4. Change Apartment \n5.Quit \n>>>Enter your choice :"))
         if choice == 1:
@@ -112,4 +120,5 @@ while True:
         elif choice == 4:
             break  
         elif choice == 5:
+            clear_console()
             quit()

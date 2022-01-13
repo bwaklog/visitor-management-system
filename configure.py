@@ -17,6 +17,7 @@ database = input("~ DATABASE NAME: ")
 proceed = input('[SYSTEM]       : Would you like to proceed (y/n)\n~ $ ')
 
 if proceed.lower() == 'n':
+    print('[SYSTEM]       : Reverting changes')
     quit()
 
 with open('config.txt', 'r+') as f:
