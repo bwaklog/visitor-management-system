@@ -1,11 +1,6 @@
 import os
 import mysql.connector as mysql
 from time import sleep
-from tkinter import simpledialog, messagebox
-import tkinter as tk
-
-window = tk.Tk()
-window.withdraw()
 
 clear_console = lambda: os.system('cls' if os.name in ('nt', 'dos') else 'clear')
 clear_console()
@@ -41,7 +36,7 @@ def crt_apt(aptname=str):
     cursor.execute(query)
     db.commit()
     print("Sucessfully created a table in database for apt :", aptname)
-    messagebox.showinfo(title="Querry Accepted", message="Sucessfully created a table in database for apt : " + aptname)
+# --------------------------------------------------------------------------------------------------------------------------------
 
 # Function to check wether an apartment exists inside a database or not, and have operations follow it
 def chk_tbl(aptname=str):  # sourcery skip: remove-redundant-pass
@@ -55,13 +50,12 @@ def chk_tbl(aptname=str):  # sourcery skip: remove-redundant-pass
         show_rec(aptname=aptname)
     else:
         print(False)
-        choice = simpledialog.askstring(title="Accept Entry", prompt="Do you want to create one(y/n)")
-        # choice = input("Do you want to create one(y/n)")
+        choice = input("Do you want to create one(y/n)")
         if choice.lower() == 'y':
             crt_apt(aptname=aptname)
         else: 
             pass
-    
+# --------------------------------------------------------------------------------------------------------------------------------
 
 # Fucntion to add a visitor to the appartment
 def add_visi(name=str, house_no=str, reason=str, accreg=bool, chk_ins=bool, aptname=str):
@@ -72,6 +66,7 @@ def add_visi(name=str, house_no=str, reason=str, accreg=bool, chk_ins=bool, aptn
     query = "INSERT INTO datacamp.%s (name, house_no, reason, accreg, chk_ins) VALUES (%s, %s, %s, %d, %d)"%(aptname, name, house_no, reason, accreg, chk_ins)
     cursor.execute(query)
     db.commit()
+# --------------------------------------------------------------------------------------------------------------------------------
 
 # Fumction to show the record of a specific apartment(table)
 def show_rec(aptname=str):
@@ -80,7 +75,10 @@ def show_rec(aptname=str):
     records = cursor.fetchall()
     for record in records:
         name, house_no, reason, accreg, chk_ins = record[1], record[2], record[3], record[4], record[5]
+        print('~~')
         print("Name :",name, " | House no :", house_no, " | Reason :", reason)#, '\n           ACCREG  CHK_INS \n       |-->',accreg, '      ',chk_ins)
+        print('~~')
+# --------------------------------------------------------------------------------------------------------------------------------
 
 def remove(vname=str, vhouse=str, aptname=str):
     sr_query = 'SELECT * FROM datacamp.'+aptname+' WHERE name=\''+vname+'\' AND house_no=\''+vhouse+'\''
@@ -91,11 +89,21 @@ def remove(vname=str, vhouse=str, aptname=str):
         query = 'UPDATE datacamp.'+aptname+' SET chk_ins = 0 WHERE name=\''+vname+'\' AND house_no=\''+vhouse+'\''
         cursor.execute(query)
         db.commit()
+# --------------------------------------------------------------------------------------------------------------------------------
 
+def chk_ins(aptname=str):
+    ins_query = 'SELECT * FROM ' + l[3] +'.'+aptname+" WHERE chk_ins = 1"
+    cursor.execute(ins_query)
+    records = cursor.fetchall()
+    for record in records:
+        name, house_no, reason, accreg, chk_ins = record[1], record[2], record[3], record[4], record[5]
+        print('~~')
+        print("Name :",name, " | House no :", house_no, " | Reason :", reason)#, '\n           ACCREG  CHK_INS \n       |-->',accreg, '      ',chk_ins)
+        print('~~')
 
 while True:
-    aptselect = simpledialog.askstring(title="Apartment" ,prompt="Enter the name of your apartment :")
-    # aptselect = input("Enter the name of your apartment : ")
+    # aptselect = simpledialog.askstring(title="Apartment" ,prompt="Enter the name of your apartment :")
+    aptselect = input("Enter the name of your apartment : ")
     aptselect = aptselect.replace(" ", "")
 
     print(aptselect)
@@ -104,32 +112,35 @@ while True:
     sleep(1)
     clear_console()
     while True:
-        choice = simpledialog.askinteger(title="Option Select",prompt="1. Check existing tables \n2. Add Visitor \n3. Remove Visitor \n4. Change Apartment \n5.Quit \n>>>Enter your choice :")
-        # choice = int(input("1. Check existing tables \n2. Add Visitor \n3. Remove Visitor \n4. Change Apartment \n5.Quit \n>>>Enter your choice :"))
+        choice = int(input("1. Check existing tables \n2. Add Visitor \n3. Remove Visitor \n4. Change Apartment\
+             \n5.Show Visitors Inside \n6.Quit \n>>>Enter your choice :"))
         if choice == 1:
             show_rec(aptname=aptselect)
         elif choice == 2:
-            vname = simpledialog.askstring(title="Visiotr Details", prompt="Enter the name of the visitor :")
-            # vname = input("Enter the name of the visitor : ")
-            vhouse = simpledialog.askstring(title="Visiotr Details", prompt="House visiting :")
-            # vhouse = input("Enter the house visiting : ")
-            vreason = simpledialog.askstring(title="Visiotr Details", prompt="Reason for visit :")
-            # vreason = input("Reason for visit : ")
-            accrej = simpledialog.askstring(title="Visiotr Details", prompt="(y)Accept Entry \n(n)Reject Entry :")
-            # accrej = input("Accept(y/n)")
+            vname = input("Enter the name of the visitor : ")
+            # vhouse = simpledialog.askstring(title="Visiotr Details", prompt="House visiting :")
+            vhouse = input("Enter the house visiting : ")
+            # vreason = simpledialog.askstring(title="Visiotr Details", prompt="Reason for visit :")
+            vreason = input("Reason for visit : ")
+            # accrej = simpledialog.askstring(title="Visiotr Details", prompt="(y)Accept Entry \n(n)Reject Entry :")
+            accrej = input("Accept(y/n)")
             if accrej.lower() == "y":
                 vaccreg = 1
                 vchk_ins = 1
             add_visi(name=vname, house_no=vhouse, reason=vreason, accreg=vaccreg, chk_ins=vchk_ins, aptname=aptselect)
         elif choice == 3:
-            # vname = input("Enter the Name of the person leaving : ")
-            vname = simpledialog.askstring(title="Visiotr Details", prompt="Name of person leaving :")
-            # vhouse = input("Enter the house visited : ")
-            vhouse = simpledialog.askstring(title="Visiotr Details", prompt="House visited :")
+            vname = input("Enter the Name of the person leaving : ")
+            # vname = simpledialog.askstring(title="Visiotr Details", prompt="Name of person leaving :")
+            vhouse = input("Enter the house visited : ")
+            # vhouse = simpledialog.askstring(title="Visiotr Details", prompt="House visited :")
             remove(vname=vname, vhouse=vhouse, aptname=aptselect)
         elif choice == 4:
             break  
         elif choice == 5:
+            chk_ins(aptname=aptselect)
+        elif choice == 6:
+            clear_console()
+            print("~ Exiting application")
+            sleep(2)
             clear_console()
             quit()
-    window.mainloop()
