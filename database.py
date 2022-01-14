@@ -64,7 +64,8 @@ def add_visi(name=str, house_no=str, reason=str, accreg=bool, chk_ins=bool, aptn
     name = "\'"+name+"\'"
     house_no = "\'"+house_no+"\'"
     reason = "\'"+reason+"\'"
-    query = "INSERT INTO datacamp.%s (name, house_no, reason, accreg, chk_ins) VALUES (%s, %s, %s, %d, %d)"%(aptname, name, house_no, reason, accreg, chk_ins)
+    query = "INSERT INTO datacamp.%s (name, house_no, reason, accreg, chk_ins) VALUES\
+    (%s, %s, %s, %d, %d)"%(aptname, name, house_no, reason, accreg, chk_ins)
     cursor.execute(query)
     db.commit()
 # --------------------------------------------------------------------------------------------------------------------------------
