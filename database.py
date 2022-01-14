@@ -120,11 +120,8 @@ while True:
             show_rec(aptname=aptselect)
         elif choice == 2:
             vname = input("Enter the name of the visitor : ")
-            # vhouse = simpledialog.askstring(title="Visiotr Details", prompt="House visiting :")
             vhouse = input("Enter the house visiting : ")
-            # vreason = simpledialog.askstring(title="Visiotr Details", prompt="Reason for visit :")
             vreason = input("Reason for visit : ")
-            # accrej = simpledialog.askstring(title="Visiotr Details", prompt="(y)Accept Entry \n(n)Reject Entry :")
             accrej = input("Accept(y/n)")
             if accrej.lower() == "y":
                 vaccreg = 1
@@ -132,9 +129,7 @@ while True:
             add_visi(name=vname, house_no=vhouse, reason=vreason, accreg=vaccreg, chk_ins=vchk_ins, aptname=aptselect)
         elif choice == 3:
             vname = input("Enter the Name of the person leaving : ")
-            # vname = simpledialog.askstring(title="Visiotr Details", prompt="Name of person leaving :")
             vhouse = input("Enter the house visited : ")
-            # vhouse = simpledialog.askstring(title="Visiotr Details", prompt="House visited :")
             remove(vname=vname, vhouse=vhouse, aptname=aptselect)
         elif choice == 4:
             break  
