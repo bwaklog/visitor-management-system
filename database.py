@@ -104,7 +104,6 @@ def chk_ins(aptname=str):
         print('~~')
 
 while True:
-    # aptselect = simpledialog.askstring(title="Apartment" ,prompt="Enter the name of your apartment :")
     aptselect = input("Enter the name of your apartment : ")
     aptselect = aptselect.replace(" ", "")
 
