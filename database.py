@@ -32,7 +32,8 @@ cursor = db.cursor()
 
 # Function to create a new table for an apartment in the database 'db'
 def crt_apt(aptname=str):
-    query = "CREATE TABLE "+aptname+" (id INT(255) NOT NULL PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), house_no VARCHAR(255), reason VARCHAR(255), accreg BOOLEAN, chk_ins BOOLEAN)"
+    query = "CREATE TABLE "+aptname+" (id INT(255) NOT NULL PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), house_no VARCHAR(255),\
+    reason VARCHAR(255), accreg BOOLEAN, chk_ins BOOLEAN)"
     cursor.execute(query)
     db.commit()
     print("Sucessfully created a table in database for apt :", aptname)
@@ -76,7 +77,7 @@ def show_rec(aptname=str):
     for record in records:
         name, house_no, reason, accreg, chk_ins = record[1], record[2], record[3], record[4], record[5]
         print('~~')
-        print("Name :",name, " | House no :", house_no, " | Reason :", reason)#, '\n           ACCREG  CHK_INS \n       |-->',accreg, '      ',chk_ins)
+        print("Name :",name, " | House no :", house_no, " | Reason :", reason)
         print('~~')
 # --------------------------------------------------------------------------------------------------------------------------------
 
@@ -98,7 +99,7 @@ def chk_ins(aptname=str):
     for record in records:
         name, house_no, reason, accreg, chk_ins = record[1], record[2], record[3], record[4], record[5]
         print('~~')
-        print("Name :",name, " | House no :", house_no, " | Reason :", reason)#, '\n           ACCREG  CHK_INS \n       |-->',accreg, '      ',chk_ins)
+        print("Name :",name, " | House no :", house_no, " | Reason :", reason)
         print('~~')
 
 while True:
