@@ -74,6 +74,7 @@ def show_rec(aptname=str):
 
 # --------------------------------------------------------------------------------------------------------------------------------
 
+# Functino to remove someone from an apartment(when they leave)
 def remove(vname=str, vhouse=str, aptname=str):
     sr_query = 'SELECT * FROM datacamp.'+aptname+' WHERE name=\''+vname+'\' AND house_no=\''+vhouse+'\''
     cursor.execute(sr_query)
@@ -85,6 +86,7 @@ def remove(vname=str, vhouse=str, aptname=str):
         db.commit()
 # --------------------------------------------------------------------------------------------------------------------------------
 
+# Functino to check who all are inside the apartment
 def chk_ins(aptname=str):
     coln = ['Visitor Name', 'House no', 'Reason']
     df = pd.DataFrame(columns=coln)
@@ -95,6 +97,7 @@ def chk_ins(aptname=str):
         name, house_no, reason, accreg, chk_ins = record[1], record[2], record[3], record[4], record[5]
         df.loc[len(df.index)] = [name, house_no, reason]
     return print(df)
+# --------------------------------------------------------------------------------------------------------------------------------
 
 while True:
     aptselect = input("Enter the name of your apartment : ")
