@@ -1,4 +1,3 @@
-from dis import dis
 import os
 import mysql.connector as mysql
 from time import sleep
@@ -81,11 +80,7 @@ def show_rec(aptname=str):
     records = cursor.fetchall()
     for record in records:
         name, house_no, reason, accreg, chk_ins = record[1], record[2], record[3], record[4], record[5]
-        # print('~~')
-        # print("Name :",name, " | House no :", house_no, " | Reason :", reason)
-        # print('~~')
-
-        df.loc[len(df.index)] = [name, house_no, reason, accreg, chk_ins]
+        df.loc[len(df.index)] = [name, house_no, reason, accreg, chk_ins] #append to dataframe
     return print(df)
 
 # --------------------------------------------------------------------------------------------------------------------------------
@@ -109,10 +104,6 @@ def chk_ins(aptname=str):
     records = cursor.fetchall()
     for record in records:
         name, house_no, reason, accreg, chk_ins = record[1], record[2], record[3], record[4], record[5]
-        # print('~~')
-        # print("Name :",name, " | House no :", house_no, " | Reason :", reason)
-        # print('~~')
-
         df.loc[len(df.index)] = [name, house_no, reason]
     return print(df)
 
