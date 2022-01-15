@@ -1,6 +1,8 @@
 import os
 import mysql.connector as mysql
 from time import sleep
+import pandas as pd
+from pyparsing import col
 
 clear_console = lambda: os.system('cls' if os.name in ('nt', 'dos') else 'clear')
 clear_console()
@@ -71,15 +73,21 @@ def add_visi(name=str, house_no=str, reason=str, accreg=bool, chk_ins=bool, aptn
 # --------------------------------------------------------------------------------------------------------------------------------
 
 # Fumction to show the record of a specific apartment(table)
+coln = ['Visitor Name', 'House No', 'Reason', 'Accreg', 'Status']
 def show_rec(aptname=str):
+    df = pd.DataFrame(columns=coln)
     query = "SELECT * FROM datacamp."+aptname+""
     cursor.execute(query)
     records = cursor.fetchall()
     for record in records:
         name, house_no, reason, accreg, chk_ins = record[1], record[2], record[3], record[4], record[5]
-        print('~~')
-        print("Name :",name, " | House no :", house_no, " | Reason :", reason)
-        print('~~')
+        # print('~~')
+        # print("Name :",name, " | House no :", house_no, " | Reason :", reason)
+        # print('~~')
+
+        df.loc[len(df.index)] = [name, house_no, reason, accreg, chk_ins]
+    return print(df)
+
 # --------------------------------------------------------------------------------------------------------------------------------
 
 def remove(vname=str, vhouse=str, aptname=str):
@@ -94,14 +102,20 @@ def remove(vname=str, vhouse=str, aptname=str):
 # --------------------------------------------------------------------------------------------------------------------------------
 
 def chk_ins(aptname=str):
+    coln = ['Visitor Name', 'House no', 'Reason']
+    df = pd.DataFrame(columns=coln)
     ins_query = 'SELECT * FROM ' + l[3] +'.'+aptname+" WHERE chk_ins = 1"
     cursor.execute(ins_query)
     records = cursor.fetchall()
     for record in records:
         name, house_no, reason, accreg, chk_ins = record[1], record[2], record[3], record[4], record[5]
-        print('~~')
-        print("Name :",name, " | House no :", house_no, " | Reason :", reason)
-        print('~~')
+        # print('~~')
+        # print("Name :",name, " | House no :", house_no, " | Reason :", reason)
+        # print('~~')
+
+        df.loc[len(df.index)] = [name, house_no, reason]
+        print(df)
+    return print(df)
 
 while True:
     aptselect = input("Enter the name of your apartment : ")
