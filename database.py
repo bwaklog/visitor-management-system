@@ -10,18 +10,7 @@ with open('config.txt', 'r') as f:
     l = f.readline()
     l.strip('')
     l = l.split('/')
-    
-'''
-Defining a database 
 
-(Author Reference)
-db = mysql.connect(
-    host = 'localhost',
-    user = 'root',
-    passwd = '1029Adity@',
-    database = 'datacamp'
-)
-'''
 db = mysql.connect(
     host = l[0],
     user = l[1],
