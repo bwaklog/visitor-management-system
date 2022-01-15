@@ -48,7 +48,7 @@ def chk_tbl(aptname=str):  # sourcery skip: remove-redundant-pass
             pass
 # --------------------------------------------------------------------------------------------------------------------------------
 
-# Fucntion to add a visitor to the appartment
+# Function to add a visitor to the appartment
 def add_visi(name=str, house_no=str, reason=str, accreg=bool, chk_ins=bool, aptname=str):
 
     name = "\'"+name+"\'"
@@ -60,7 +60,7 @@ def add_visi(name=str, house_no=str, reason=str, accreg=bool, chk_ins=bool, aptn
     db.commit()
 # --------------------------------------------------------------------------------------------------------------------------------
 
-# Fumction to show the record of a specific apartment(table)
+# Function to show the record of a specific apartment(table)
 coln = ['Visitor Name', 'House No', 'Reason', 'Accreg', 'Status']
 def show_rec(aptname=str):
     df = pd.DataFrame(columns=coln)
@@ -74,7 +74,7 @@ def show_rec(aptname=str):
 
 # --------------------------------------------------------------------------------------------------------------------------------
 
-# Functino to remove someone from an apartment(when they leave)
+# Function to remove someone from an apartment(when they leave)
 def remove(vname=str, vhouse=str, aptname=str):
     sr_query = 'SELECT * FROM datacamp.'+aptname+' WHERE name=\''+vname+'\' AND house_no=\''+vhouse+'\''
     cursor.execute(sr_query)
@@ -86,7 +86,7 @@ def remove(vname=str, vhouse=str, aptname=str):
         db.commit()
 # --------------------------------------------------------------------------------------------------------------------------------
 
-# Functino to check who all are inside the apartment
+# Function to check who all are inside the apartment
 def chk_ins(aptname=str):
     coln = ['Visitor Name', 'House no', 'Reason']
     df = pd.DataFrame(columns=coln)
@@ -99,6 +99,7 @@ def chk_ins(aptname=str):
     return print(df)
 # --------------------------------------------------------------------------------------------------------------------------------
 
+# Front-end for application
 while True:
     aptselect = input("Enter the name of your apartment : ")
     aptselect = aptselect.replace(" ", "")
