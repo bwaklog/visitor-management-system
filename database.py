@@ -1,8 +1,8 @@
+from dis import dis
 import os
 import mysql.connector as mysql
 from time import sleep
 import pandas as pd
-from pyparsing import col
 
 clear_console = lambda: os.system('cls' if os.name in ('nt', 'dos') else 'clear')
 clear_console()
@@ -114,7 +114,6 @@ def chk_ins(aptname=str):
         # print('~~')
 
         df.loc[len(df.index)] = [name, house_no, reason]
-        print(df)
     return print(df)
 
 while True:
