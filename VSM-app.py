@@ -53,8 +53,8 @@ coln = ['Name', 'House No', 'Reason', 'Entry', 'Exit', 'Accreg', 'Status']
 # Shows the records of a table - people inside and outside
 def show_rec(aptname=str):
     df = pd.DataFrame(columns=coln)
-    querry = "SELECT * FROM " + l[3] + "." + aptname + ""
-    cursor.execute(querry)
+    query = "SELECT * FROM " + l[3] + "." + aptname + ""
+    cursor.execute(query)
     records = cursor.fetchall()
     for record in records:
         name, house, reason, entry, ext, accreg, status = record[1], record[2], record[3], record[4], record[5], \
@@ -107,7 +107,7 @@ class Visitor:
             vname, vhouse, reason, entry, ext, accreg, status = record[1:]
             # print(vname, vhouse, reason, entry, ext, accreg, status)
 
-# Fucntion to check who all are inside
+# Function to check who all are inside
 def status_in(aptname=str):
     coln = ['Visitor', 'House', 'Reason', 'Entry']
     df = pd.DataFrame(columns=coln)
@@ -121,13 +121,6 @@ def status_in(aptname=str):
     print(df)
 
 
-
-chk_tbl(aptname="apt1")
-show_rec(aptname='apt1')
-v1 = Visitor(aptname='apt1', name='Visitor 1', house='204')
-v1.get_data()
-
-status_in(aptname='apt1')
 
 # screen = Tk()
 # screen.withdraw()
