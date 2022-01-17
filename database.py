@@ -99,7 +99,7 @@ def chk_ins(aptname=str):
     return print(df)
 # --------------------------------------------------------------------------------------------------------------------------------
 
-# Front-end for application
+Front-end for application
 while True:
     aptselect = input("Enter the name of your apartment : ")
     aptselect = aptselect.replace(" ", "")
@@ -128,7 +128,7 @@ while True:
             vhouse = input("Enter the house visited : ")
             remove(vname=vname, vhouse=vhouse, aptname=aptselect)
         elif choice == 4:
-            break  
+            break
         elif choice == 5:
             chk_ins(aptname=aptselect)
         elif choice == 6:
