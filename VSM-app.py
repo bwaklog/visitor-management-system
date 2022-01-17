@@ -122,6 +122,126 @@ def status_in(aptname=str):
 
 
 
-# screen = Tk()
-# screen.withdraw()
-# screen.mainloop()
+app = Tk()
+app.title('VSM')
+from PIL import Image, ImageTk
+
+def constnt():
+    # consistent GUI
+    app_title = Label(app, text='VMS', font=('Mono', 40))
+    # app_title.config(background='white')
+    app_title.grid(row=0, column=0, pady=20, padx=0)
+    image = Image.open('gate.png')
+    photo = ImageTk.PhotoImage(image)
+    label = Label(app, image=photo)
+    label.image = photo
+    label.grid(row=0, column=1)
+
+def STARTSRC():
+    for i in app.winfo_children():
+        i.destroy()
+
+    constnt()
+
+    def selected():
+        aptinfo = apt.get()
+        str(aptinfo).replace(" ", "")
+        chk_tbl(aptname=aptinfo)
+        print("Fetching table for", aptinfo)
+        HOMESCRC(apt=aptinfo)
+
+
+    l1 = Label(app, text='Apartment Name :')
+    l1.grid(row=1, column=0, padx=5)
+
+    apartment = StringVar()
+
+    apt = Entry(app, textvariable=apartment)
+    apt.grid(row=1, column=1, padx=5)
+
+    apt_sel = Button(app, text='Select Apartment!', width=26, command=selected)
+    apt_sel.grid(row=2, columnspan=2, pady=5)
+
+
+    pass
+def HOMESCRC(apt=str):
+    for i in app.winfo_children():
+        i.destroy()
+
+    app.title(apt)
+    constnt()
+
+    def vis():
+        ADDVIS(apt=apt)
+    def rem():
+        pass
+    def his():
+        pass
+    def insd():
+        pass
+    def change():
+        STARTSRC(apt=apt)
+
+    add_vis = Button(app, text='Add Visitor', width=26, command=vis)
+    add_vis.grid(row=2, columnspan=2, pady=1, padx=5)
+    rem_vis = Button(app, text='Remove Visitor', width=26, command=rem)
+    rem_vis.grid(row=3, columnspan=2, pady=1, padx=5)
+    hist = Button(app, text='View history', width=26, command=his)
+    hist.grid(row=4, columnspan=2, pady=1, padx=5)
+    ins = Button(app, text='Currently Inside', width=26, command=insd)
+    ins.grid(row=5, columnspan=2, pady=1, padx=5)
+    chng = Button(app, text='Change Apartment', width=26, command=change)
+    chng.grid(row=5, columnspan=2, pady=1, padx=5)
+    qut = Button(app, text='Quit Application', width=26, command=app.destroy)
+    qut.grid(row=5, columnspan=2, pady=1, padx=5)
+
+
+def ADDVIS(apt=str):
+    for i in app.winfo_children():
+        i.destroy()
+    constnt()
+
+    def addition():
+        name_info = name.get()
+        house_info = house.get()
+        reason_info = reason.get()
+        print(name_info, house_info, reason_info)
+        add_rec(aptname=apt, name=name_info, house=house_info, reason=reason_info, accreg=1, status=1)
+        print("Record has been added")
+        print("Exiting to Home screen")
+        HOMESCRC()
+        pass
+
+    nl = Label(app, text='Visitor Name :')
+    nl.grid(row=1, column=0, padx=5)
+    hl = Label(app, text='House Visiting :')
+    hl.grid(row=2, column=0, padx=5)
+    rl = Label(app, text='Visiting Reason :')
+    rl.grid(row=3, column=0, padx=5)
+
+    name = StringVar()
+    house = StringVar()
+    reason = StringVar()
+
+    ne = Entry(app, textvariable=name)
+    ne.grid(row=1, column=1, padx=5)
+    he = Entry(app, textvariable=house)
+    he.grid(row=2, column=1, padx=5)
+    re = Entry(app, textvariable=reason)
+    re.grid(row=3, column=1, padx=5)
+
+    cl = Label(app, text='Confirm Entry :')
+    cl.grid(row=4, column=0, padx=5)
+    cr = Checkbutton(app)
+    cr.grid(row=4, column=1)
+
+    bck = Button(app, text='Add Visitor', width=26, command=addition)
+    bck.grid(row=5, columnspan=2, pady=1, padx=5)
+    bck = Button(app, text='Back', width=26, command=HOMESCRC)
+    bck.grid(row=6, columnspan=2, pady=1, padx=5)
+
+
+
+STARTSRC()
+
+app.mainloop()
