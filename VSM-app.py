@@ -174,13 +174,14 @@ def HOMESCRC(apt=str):
     def vis():
         ADDVIS(apt=apt)
     def rem():
-        pass
+        REMVIS(apt=apt)
     def his():
         pass
     def insd():
         pass
     def change():
-        STARTSRC(apt=apt)
+        app.title('VMS')
+        STARTSRC()
 
     add_vis = Button(app, text='Add Visitor', width=26, command=vis)
     add_vis.grid(row=2, columnspan=2, pady=1, padx=5)
@@ -193,7 +194,7 @@ def HOMESCRC(apt=str):
     chng = Button(app, text='Change Apartment', width=26, command=change)
     chng.grid(row=5, columnspan=2, pady=1, padx=5)
     qut = Button(app, text='Quit Application', width=26, command=app.destroy)
-    qut.grid(row=5, columnspan=2, pady=1, padx=5)
+    qut.grid(row=6, columnspan=2, pady=1, padx=5)
 
 
 def ADDVIS(apt=str):
@@ -209,7 +210,7 @@ def ADDVIS(apt=str):
         add_rec(aptname=apt, name=name_info, house=house_info, reason=reason_info, accreg=1, status=1)
         print("Record has been added")
         print("Exiting to Home screen")
-        HOMESCRC()
+        HOMESCRC(apt=apt)
         pass
 
     nl = Label(app, text='Visitor Name :')
@@ -235,9 +236,48 @@ def ADDVIS(apt=str):
     cr = Checkbutton(app)
     cr.grid(row=4, column=1)
 
-    bck = Button(app, text='Add Visitor', width=26, command=addition)
+    def back():
+        HOMESCRC(apt=apt)
+
+    addbtn = Button(app, text='Add Visitor', width=26, command=addition)
+    addbtn.grid(row=5, columnspan=2, pady=1, padx=5)
+    bck = Button(app, text='Back', width=26, command=back)
+    bck.grid(row=6, columnspan=2, pady=1, padx=5)
+
+def REMVIS(apt=str):
+    for i in app.winfo_children():
+        i.destroy()
+    constnt()
+
+    nl = Label(app, text='Visitor Name :')
+    nl.grid(row=1, column=0, padx=5)
+    hl = Label(app, text='House Visiting :')
+    hl.grid(row=2, column=0, padx=5)
+
+    name = StringVar()
+    house = StringVar()
+
+    ne = Entry(app, textvariable=name)
+    ne.grid(row=1, column=1, padx=5)
+    he = Entry(app, textvariable=house)
+    he.grid(row=2, column=1, padx=5)
+
+    cl = Label(app, text='Confirm Entry :')
+    cl.grid(row=4, column=0, padx=5)
+    cr = Checkbutton(app)
+    cr.grid(row=4, column=1)
+
+    def rem_visi():
+        remove(aptname=apt, name=ne.get(), house=he.get())
+        print("Executed")
+        HOMESCRC(apt=apt)
+
+    def back():
+        HOMESCRC(apt=apt)
+
+    bck = Button(app, text='Add Visitor', width=26, command=rem_visi)
     bck.grid(row=5, columnspan=2, pady=1, padx=5)
-    bck = Button(app, text='Back', width=26, command=HOMESCRC)
+    bck = Button(app, text='Back', width=26, command=back)
     bck.grid(row=6, columnspan=2, pady=1, padx=5)
 
 
