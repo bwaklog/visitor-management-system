@@ -1,6 +1,6 @@
 '''
 VISITOR MANAGEMENT SYSTEM
-version 4.3.2
+version 4.5
 ===================================================================================================================
 Author     : Aditya Hegde
 Github     : xadityahx
