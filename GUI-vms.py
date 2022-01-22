@@ -19,14 +19,6 @@ def home():
         i.destroy()
     homeScr()
 
-def rem():
-    pass
-
-
-
-def vw_his():
-    pass
-
 
 def newVis():
     root.deiconify()

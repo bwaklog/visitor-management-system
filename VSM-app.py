@@ -1,22 +1,42 @@
+'''
+VISITOR MANAGEMENT SYSTEM
+version 4.3.2
+===================================================================================================================
+Author     : Aditya Hegde
+Github     : xadityahx
+Repository : visitor-management-system
+Created on : 19th October 2021
+'''
+
+# Modules necessary for the project
+from PIL import Image, ImageTk
 from tkinter import *
 import os
 import mysql.connector as mysql
 import pandas as pd
-import time
-import sys
 
-clear_console = lambda: os.system('cls' if os.name in ('nt', 'dos') else 'clear')
+# Function to clear the terminal
+
+
+def clear_console(): return os.system(
+    'cls' if os.name in ('nt', 'dos') else 'clear')
+
+
+# Clearing the terminal
 clear_console()
 
+
+# Defining the windown using tkinter
 app = Tk()
 app.title('VSM')
-from PIL import Image, ImageTk
 
+# Getting the details of the configuration for using MySQL(hostname, username, password and database being used)
 with open('config.txt', 'r') as f:
     l = f.readline()
     l.strip('')
     l = l.split('/')
 
+# Connecting to the databse that is going to be referred to in the application
 db = mysql.connect(
     host=l[0],
     user=l[1],
@@ -24,6 +44,7 @@ db = mysql.connect(
     database=l[3]
 )
 
+# Defining the cursor to perform SQL commands in MySQL
 cursor = db.cursor()
 
 
@@ -57,7 +78,8 @@ def chk_tbl(aptname=str):
 coln = ['Name', 'House No', 'Reason', 'Entry', 'Exit', 'Accreg', 'Status']
 
 
-# Shows the records of a table - people inside and outside
+# Shows the records of a table - people inside and outside(Terminal output)
+# This function also creates an interface to show the graphical output in the app window in the form of a table
 def show_rec(aptname=str):
     df = pd.DataFrame(columns=coln)
     query = "SELECT * FROM " + l[3] + "." + aptname + ""
@@ -65,7 +87,7 @@ def show_rec(aptname=str):
     records = cursor.fetchall()
     for record in records:
         name, house, reason, entry, ext, accreg, stat = record[1], record[2], record[3], record[4], record[5], \
-                                                        record[6], record[7]
+            record[6], record[7]
         print(record)
         if stat == 1:
             ext = 'Still Inside'
@@ -100,7 +122,8 @@ def show_rec(aptname=str):
     def ext_home():
         HOMESCR(apt=aptname)
 
-    btn = Button(app, text='Exit Home', command=ext_home, width=26).grid(row=i, pady=5, columnspan=len(records[0]))
+    btn = Button(app, text='Exit Home', command=ext_home, width=26).grid(
+        row=i, pady=5, columnspan=len(records[0]))
 
 
 # Add a visitor to a table
@@ -114,7 +137,8 @@ def add_rec(aptname=str, name=str, house=str, reason=str, accreg=bool, status=bo
 
 # Add the time of exit of a visitor - removing a visitor from the apartment
 def remove(aptname=str, name=str, house=str):
-    query_s = "SELECT * FROM %s.%s WHERE name='%s' AND house='%s'" % (l[3], aptname, name, house)
+    query_s = "SELECT * FROM %s.%s WHERE name='%s' AND house='%s'" % (
+        l[3], aptname, name, house)
     print('Stage 1')
     cursor.execute(query_s)
     record = cursor.fetchall()
@@ -134,8 +158,9 @@ class Visitor:
         self.name = name
         self.house = house
 
-    def get_data(self):
-        query_s = "SELECT * FROM %s.%s WHERE name='%s' AND house='%s'" % (l[3], self.aptname, self.name, self.house)
+    def get_data(self):  # sourcery skip: remove-unnecessary-else
+        query_s = "SELECT * FROM %s.%s WHERE name='%s' AND house='%s'" % (
+            l[3], self.aptname, self.name, self.house)
         cursor.execute(query_s)
         record = cursor.fetchall()
         if record == []:
@@ -147,6 +172,7 @@ class Visitor:
 
 
 # Function to check who all are inside
+# This function also creates an interface to show the graphical output in the app window in the form of a table
 def status_in(aptname=str):
     coln = ['Visitor', 'House', 'Reason', 'Entry']
     df = pd.DataFrame(columns=coln)
@@ -183,9 +209,11 @@ def status_in(aptname=str):
     def ext_home():
         HOMESCR(apt=aptname)
 
-    btn = Button(app, text='Exit Home', command=ext_home, width=26).grid(row=i, pady=5, columnspan=len(records[0]))
+    btn = Button(app, text='Exit Home', command=ext_home, width=26).grid(
+        row=i, pady=5, columnspan=len(records[0]))
 
 
+# Logo + App Title which is used in all screens
 def constnt():
     # consistent GUI
     app_title = Label(app, text='VMS', font=('Mono', 40))
@@ -198,6 +226,7 @@ def constnt():
     label.grid(row=0, column=1)
 
 
+# Interface for start screen
 def STARTSRC():
     for i in app.winfo_children():
         i.destroy()
@@ -225,6 +254,7 @@ def STARTSRC():
     pass
 
 
+# Interface for the homescreen of the selected apartment - same for all
 def HOMESCR(apt=str):
     for i in app.winfo_children():
         i.destroy()
@@ -242,12 +272,10 @@ def HOMESCR(apt=str):
         clear_console()  # can comment outr
         show_rec(aptname=apt)
         HISTORY(apt=apt)
-        pass
 
     def insd():
         clear_console()  # can comment out
         VWINSD(apt=apt)
-        pass
 
     def change():
         app.title('VMS')
@@ -267,6 +295,7 @@ def HOMESCR(apt=str):
     qut.grid(row=7, columnspan=2, pady=1, padx=5)
 
 
+# Interface to add a visitor
 def ADDVIS(apt=str):
     for i in app.winfo_children():
         i.destroy()
@@ -277,11 +306,11 @@ def ADDVIS(apt=str):
         house_info = house.get()
         reason_info = reason.get()
         print(name_info, house_info, reason_info)
-        add_rec(aptname=apt, name=name_info, house=house_info, reason=reason_info, accreg=1, status=1)
+        add_rec(aptname=apt, name=name_info, house=house_info,
+                reason=reason_info, accreg=1, status=1)
         print("Record has been added")
         print("Exiting to Home screen")
         HOMESCR(apt=apt)
-        pass
 
     nl = Label(app, text='Visitor Name :')
     nl.grid(row=1, column=0, padx=5)
@@ -315,6 +344,7 @@ def ADDVIS(apt=str):
     bck.grid(row=6, columnspan=2, pady=1, padx=5)
 
 
+# Interface for when you want to record someone leaving the apartment
 def REMVIS(apt=str):
     for i in app.winfo_children():
         i.destroy()
@@ -352,14 +382,17 @@ def REMVIS(apt=str):
     bck.grid(row=6, columnspan=2, pady=1, padx=5)
 
 
+# Calling the interface for showing the tabulated form of the visiting history
 def HISTORY(apt):
     show_rec(aptname=apt)
 
 
+# Filters out the visiting history and returns a tabulated result of the people still inside the association
 def VWINSD(apt):
     status_in(aptname=apt)
 
 
+# Initiate app from Start Screen - to enter apartment name
 STARTSRC()
 
 app.mainloop()
