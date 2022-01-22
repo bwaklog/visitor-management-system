@@ -50,6 +50,11 @@ cursor = db.cursor()
 
 # Function to create a new table for an apartment in the database
 def crt_apt(aptname=str):
+    """Function To create an apartment
+
+    Args:
+        aptname (str, optional): [description]. Defaults to str.
+    """
     query = "CREATE TABLE " + aptname + " (vsid INT NOT NULL AUTO_INCREMENT\
      PRIMARY KEY, name VARCHAR(255), house VARCHAR(255),reason VARCHAR(255),\
       idate DATETIME, fdate DATETIME, accreg BOOLEAN, status BOOLEAN)"
@@ -61,6 +66,11 @@ def crt_apt(aptname=str):
 
 # Function to check whether the table for an apartment exists inside a table
 def chk_tbl(aptname=str):
+    """Function to check whether the table for an apartment exists insisde the database being used
+
+    Args:
+        aptname (str, optional): [description]. Defaults to str.
+    """
     cursor.execute("SHOW TABLES")
     tables = cursor.fetchall()
     tbl_list = [table[0] for table in tables]
@@ -81,6 +91,11 @@ coln = ['Name', 'House No', 'Reason', 'Entry', 'Exit', 'Accreg', 'Status']
 # Shows the records of a table - people inside and outside(Terminal output)
 # This function also creates an interface to show the graphical output in the app window in the form of a table
 def show_rec(aptname=str):
+    """ Outputs the history of entries in the table {aptname}
+
+    Args:
+        aptname (str, optional): [description]. Defaults to str.
+    """
     df = pd.DataFrame(columns=coln)
     query = "SELECT * FROM " + l[3] + "." + aptname + ""
     cursor.execute(query)
@@ -128,6 +143,16 @@ def show_rec(aptname=str):
 
 # Add a visitor to a table
 def add_rec(aptname=str, name=str, house=str, reason=str, accreg=bool, status=bool):
+    """Function to create and execute an sql query to enter in a visitor
+
+    Args:
+        aptname (str, optional): Apartment name. Defaults to str.
+        name (str, optional): Name of visitor. Defaults to str.
+        house (str, optional): House the visitor is visiting. Defaults to str.
+        reason (str, optional): Reason for visit. Defaults to str.
+        accreg (bool, optional): Accepted or rejected entry. Defaults to bool.
+        status (bool, optional): Status - if visitor is inside. Defaults to bool. Default to 1 if entry if {accreg} is 1
+    """
     query = "INSERT INTO `%s`.`%s` (`name`, `house`, `reason`, `idate`, `fdate`, `accreg`, `status`) VALUES ('%s',\
      '%s', '%s', NOW(), NULL, %d, %d)" % (
         l[3], aptname, name, house, reason, accreg, status)
@@ -137,6 +162,13 @@ def add_rec(aptname=str, name=str, house=str, reason=str, accreg=bool, status=bo
 
 # Add the time of exit of a visitor - removing a visitor from the apartment
 def remove(aptname=str, name=str, house=str):
+    """Function to add the time the visitor exits the aparment and change {status} value to 0
+
+    Args:
+        aptname (str, optional): Apartment name. Defaults to str.
+        name (str, optional): Visitor's name. Defaults to str.
+        house (str, optional): House which was visitied -  house number. Defaults to str.
+    """
     query_s = "SELECT * FROM %s.%s WHERE name='%s' AND house='%s'" % (
         l[3], aptname, name, house)
     print('Stage 1')
@@ -159,6 +191,17 @@ class Visitor:
         self.house = house
 
     def get_data(self):  # sourcery skip: remove-unnecessary-else
+        """Creating a visitor object to be used, incase a particular visitor's record is to be retrive"
+
+        Returns:
+            str: Returns "No data available" if there exists no record with the given name and house combination
+
+            if the arguements for name and house combination exists, in that case we can retrieve the other details:
+                > of the visitor such as the time of entry
+                > time of exit(if visitor has left the apartment)
+                > if the visitor is still inside the complex
+                > if the visitor entry has been rejected
+        """
         query_s = "SELECT * FROM %s.%s WHERE name='%s' AND house='%s'" % (
             l[3], self.aptname, self.name, self.house)
         cursor.execute(query_s)
@@ -174,6 +217,11 @@ class Visitor:
 # Function to check who all are inside
 # This function also creates an interface to show the graphical output in the app window in the form of a table
 def status_in(aptname=str):
+    """Return the records in a tabulated manner of only those who are still inside
+
+    Args:
+        aptname (str, optional): Apartment name. Defaults to str.
+    """
     coln = ['Visitor', 'House', 'Reason', 'Entry']
     df = pd.DataFrame(columns=coln)
     query_i = "SELECT * FROM %s.%s WHERE `status`=1;" % (l[3], aptname)
