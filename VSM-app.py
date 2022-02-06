@@ -9,22 +9,19 @@ Created on : 19th October 2021
 '''
 
 # Modules necessary for the project
-from PIL import Image, ImageTk
 from tkinter import *
 import os
 import mysql.connector as mysql
 import pandas as pd
 
+
 # Function to clear the terminal
-
-
 def clear_console(): return os.system(
     'cls' if os.name in ('nt', 'dos') else 'clear')
 
 
 # Clearing the terminal
 clear_console()
-
 
 # Defining the windown using tkinter
 app = Tk()
@@ -77,11 +74,12 @@ def chk_tbl(aptname=str):
     print(tbl_list)
     if aptname in tbl_list:
         print(True)
+        print("In list")
+        print("Fetching table for", aptname)
+        HOMESCR(apt=aptname)
     else:
-        print(aptname)
-        choice = input('False\nDo you want to create a new one(y/n) : ')
-        if choice.lower() == 'y':
-            crt_apt(aptname)
+        print("Not in list")
+        NEWAPT(apt=aptname)
 
 
 # show records of a specific table
@@ -102,7 +100,7 @@ def show_rec(aptname=str):
     records = cursor.fetchall()
     for record in records:
         name, house, reason, entry, ext, accreg, stat = record[1], record[2], record[3], record[4], record[5], \
-            record[6], record[7]
+                                                        record[6], record[7]
         print(record)
         if stat == 1:
             ext = 'Still Inside'
@@ -264,14 +262,9 @@ def status_in(aptname=str):
 # Logo + App Title which is used in all screens
 def constnt():
     # consistent GUI
-    app_title = Label(app, text='VMS', font=('Mono', 40))
+    app_title = Label(app, text='ETALY', font=('Mono', 40))
     # app_title.config(background='white')
-    app_title.grid(row=0, column=0, pady=20, padx=0)
-    image = Image.open('gate.png')
-    photo = ImageTk.PhotoImage(image)
-    label = Label(app, image=photo)
-    label.image = photo
-    label.grid(row=0, column=1)
+    app_title.grid(row=0, pady=20, padx=0, columnspan=2)
 
 
 # Interface for start screen
@@ -285,8 +278,8 @@ def STARTSRC():
         aptinfo = apt.get()
         str(aptinfo).replace(" ", "")
         chk_tbl(aptname=aptinfo)
-        print("Fetching table for", aptinfo)
-        HOMESCR(apt=aptinfo)
+        # print("Fetching table for", aptinfo)
+        # HOMESCR(apt=aptinfo)
 
     l1 = Label(app, text='Apartment Name :')
     l1.grid(row=1, column=0, padx=5)
@@ -299,7 +292,32 @@ def STARTSRC():
     apt_sel = Button(app, text='Select Apartment!', width=26, command=selected)
     apt_sel.grid(row=2, columnspan=2, pady=5)
 
-    pass
+    qut = Button(app, text='Quit Application', width=26, command=app.destroy)
+    qut.grid(row=4, columnspan=2, pady=1, padx=5)
+
+
+def NEWAPT(apt=str):
+    for i in app.winfo_children():
+        i.destroy()
+
+    constnt()
+
+    l1 = Label(app, text=f'Would you want to create a table for {apt}')
+    l1.grid(row=1, column=0, padx=5)
+
+    def y_crt():
+        crt_apt(aptname=apt)
+
+    def n_crt():
+        STARTSRC()
+
+    crt_t = Button(app, text='Create Apartment', width=26, command=y_crt)
+    crt_t.grid(row=2, columnspan=2, pady=5)
+    crt_f = Button(app, text='Don\'t Create Apartment', width=26, command=n_crt)
+    crt_f.grid(row=3, columnspan=2, pady=5)
+
+    qut = Button(app, text='Quit Application', width=26, command=app.destroy)
+    qut.grid(row=4, columnspan=2, pady=1, padx=5)
 
 
 # Interface for the homescreen of the selected apartment - same for all
@@ -339,6 +357,7 @@ def HOMESCR(apt=str):
     ins.grid(row=5, columnspan=2, pady=1, padx=5)
     chng = Button(app, text='Change Apartment', width=26, command=change)
     chng.grid(row=6, columnspan=2, pady=1, padx=5)
+
     qut = Button(app, text='Quit Application', width=26, command=app.destroy)
     qut.grid(row=7, columnspan=2, pady=1, padx=5)
 
@@ -391,6 +410,9 @@ def ADDVIS(apt=str):
     bck = Button(app, text='Back', width=26, command=back)
     bck.grid(row=6, columnspan=2, pady=1, padx=5)
 
+    qut = Button(app, text='Quit Application', width=26, command=app.destroy)
+    qut.grid(row=8, columnspan=2, pady=1, padx=5)
+
 
 # Interface for when you want to record someone leaving the apartment
 def REMVIS(apt=str):
@@ -429,6 +451,8 @@ def REMVIS(apt=str):
     bck = Button(app, text='Back', width=26, command=back)
     bck.grid(row=6, columnspan=2, pady=1, padx=5)
 
+    qut = Button(app, text='Quit Application', width=26, command=app.destroy)
+    qut.grid(row=7, columnspan=2, pady=1, padx=5)
 
 # Calling the interface for showing the tabulated form of the visiting history
 def HISTORY(apt):
@@ -442,5 +466,6 @@ def VWINSD(apt):
 
 # Initiate app from Start Screen - to enter apartment name
 STARTSRC()
+app.title('ETALY')
 
 app.mainloop()
