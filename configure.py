@@ -29,7 +29,6 @@ with open('config.txt', 'r+') as f:
 with open('config.txt', 'a') as filea:
     filea.write(host+ '/'+user+ '/'+passwd+ '/'+database)
     filea.close()
-    # messagebox.showwarning(title='CONFIGURE', message='The configuration has been modified')
     print('[SYSTEM]       : Config files have been modified')
     print('[SYSTEM]       : %s seconds' % (time.time()-start))
     print('[SYSTEM] LOCAL :', datetime.datetime.now())
