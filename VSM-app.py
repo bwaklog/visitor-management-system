@@ -59,6 +59,7 @@ def crt_apt(aptname=str):
     cursor.execute(query)
     db.commit()
     print(aptname, "table successfully created")
+    HOMESCR(apt=aptname)
 
 
 # Function to check whether the table for an apartment exists inside a table
@@ -397,16 +398,12 @@ def ADDVIS(apt=str):
     re = Entry(app, textvariable=reason)
     re.grid(row=3, column=1, padx=5)
 
-    cl = Label(app, text='Confirm Entry :')
-    cl.grid(row=4, column=0, padx=5)
-    cr = Checkbutton(app)
-    cr.grid(row=4, column=1)
+    addbtn = Button(app, text='Add Visitor', width=26, command=addition)
+    addbtn.grid(row=5, columnspan=2, pady=1, padx=5)
 
     def back():
         HOMESCR(apt=apt)
 
-    addbtn = Button(app, text='Add Visitor', width=26, command=addition)
-    addbtn.grid(row=5, columnspan=2, pady=1, padx=5)
     bck = Button(app, text='Back', width=26, command=back)
     bck.grid(row=6, columnspan=2, pady=1, padx=5)
 
@@ -433,10 +430,6 @@ def REMVIS(apt=str):
     he = Entry(app, textvariable=house)
     he.grid(row=2, column=1, padx=5)
 
-    cl = Label(app, text='Confirm Entry :')
-    cl.grid(row=4, column=0, padx=5)
-    cr = Checkbutton(app)
-    cr.grid(row=4, column=1)
 
     def rem_visi():
         remove(aptname=apt, name=ne.get(), house=he.get())
