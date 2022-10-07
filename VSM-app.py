@@ -101,7 +101,7 @@ def show_rec(aptname=str):
     records = cursor.fetchall()
     for record in records:
         name, house, reason, entry, ext, accreg, stat = record[1], record[2], record[3], record[4], record[5], \
-                                                        record[6], record[7]
+            record[6], record[7]
         print(record)
         if stat == 1:
             ext = 'Still Inside'
@@ -314,7 +314,8 @@ def NEWAPT(apt=str):
 
     crt_t = Button(app, text='Create Apartment', width=26, command=y_crt)
     crt_t.grid(row=2, columnspan=2, pady=5)
-    crt_f = Button(app, text='Don\'t Create Apartment', width=26, command=n_crt)
+    crt_f = Button(app, text='Don\'t Create Apartment',
+                   width=26, command=n_crt)
     crt_f.grid(row=3, columnspan=2, pady=5)
 
     qut = Button(app, text='Quit Application', width=26, command=app.destroy)
@@ -430,7 +431,6 @@ def REMVIS(apt=str):
     he = Entry(app, textvariable=house)
     he.grid(row=2, column=1, padx=5)
 
-
     def rem_visi():
         remove(aptname=apt, name=ne.get(), house=he.get())
         print("Executed")
@@ -448,6 +448,8 @@ def REMVIS(apt=str):
     qut.grid(row=7, columnspan=2, pady=1, padx=5)
 
 # Calling the interface for showing the tabulated form of the visiting history
+
+
 def HISTORY(apt):
     show_rec(aptname=apt)
 
