@@ -1,9 +1,9 @@
 '''
 VISITOR MANAGEMENT SYSTEM
-version 4.5
+version 5.0
 ===================================================================================================================
 Author     : Aditya Hegde
-Github     : xadityahx
+Github     : bwaklog
 Repository : visitor-management-system
 Created on : 19th October 2021
 '''
