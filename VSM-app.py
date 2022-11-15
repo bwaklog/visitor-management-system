@@ -13,6 +13,8 @@ from tkinter import *
 import os
 import mysql.connector as mysql
 import pandas as pd
+import smtplib
+import ssl
 
 
 # Function to clear the terminal
@@ -47,11 +49,7 @@ cursor = db.cursor()
 
 # Function to create a new table for an apartment in the database
 def crt_apt(aptname=str):
-    """Function To create an apartment
 
-    Args:
-        aptname (str, optional): [description]. Defaults to str.
-    """
     query = "CREATE TABLE " + aptname + " (vsid INT NOT NULL AUTO_INCREMENT\
      PRIMARY KEY, name VARCHAR(255), house VARCHAR(255),reason VARCHAR(255),\
       idate DATETIME, fdate DATETIME, accreg BOOLEAN, status BOOLEAN)"
@@ -64,11 +62,7 @@ def crt_apt(aptname=str):
 
 # Function to check whether the table for an apartment exists inside a table
 def chk_tbl(aptname=str):
-    """Function to check whether the table for an apartment exists insisde the database being used
 
-    Args:
-        aptname (str, optional): [description]. Defaults to str.
-    """
     cursor.execute("SHOW TABLES")
     tables = cursor.fetchall()
     tbl_list = [table[0] for table in tables]
@@ -90,11 +84,7 @@ coln = ['Name', 'House No', 'Reason', 'Entry', 'Exit', 'Accreg', 'Status']
 # Shows the records of a table - people inside and outside(Terminal output)
 # This function also creates an interface to show the graphical output in the app window in the form of a table
 def show_rec(aptname=str):
-    """ Outputs the history of entries in the table {aptname}
 
-    Args:
-        aptname (str, optional): [description]. Defaults to str.
-    """
     df = pd.DataFrame(columns=coln)
     query = "SELECT * FROM " + l[3] + "." + aptname + ""
     cursor.execute(query)
@@ -142,16 +132,7 @@ def show_rec(aptname=str):
 
 # Add a visitor to a table
 def add_rec(aptname=str, name=str, house=str, reason=str, accreg=bool, status=bool):
-    """Function to create and execute an sql query to enter in a visitor
 
-    Args:
-        aptname (str, optional): Apartment name. Defaults to str.
-        name (str, optional): Name of visitor. Defaults to str.
-        house (str, optional): House the visitor is visiting. Defaults to str.
-        reason (str, optional): Reason for visit. Defaults to str.
-        accreg (bool, optional): Accepted or rejected entry. Defaults to bool.
-        status (bool, optional): Status - if visitor is inside. Defaults to bool. Default to 1 if entry if {accreg} is 1
-    """
     query = "INSERT INTO `%s`.`%s` (`name`, `house`, `reason`, `idate`, `fdate`, `accreg`, `status`) VALUES ('%s',\
      '%s', '%s', NOW(), NULL, %d, %d)" % (
         l[3], aptname, name, house, reason, accreg, status)
@@ -161,13 +142,7 @@ def add_rec(aptname=str, name=str, house=str, reason=str, accreg=bool, status=bo
 
 # Add the time of exit of a visitor - removing a visitor from the apartment
 def remove(aptname=str, name=str, house=str):
-    """Function to add the time the visitor exits the aparment and change {status} value to 0
 
-    Args:
-        aptname (str, optional): Apartment name. Defaults to str.
-        name (str, optional): Visitor's name. Defaults to str.
-        house (str, optional): House which was visitied -  house number. Defaults to str.
-    """
     query_s = "SELECT * FROM %s.%s WHERE name='%s' AND house='%s'" % (
         l[3], aptname, name, house)
     print('Stage 1')
@@ -190,19 +165,11 @@ class Visitor:
         self.house = house
 
     def get_data(self):  # sourcery skip: remove-unnecessary-else
-        """Creating a visitor object to be used, incase a particular visitor's record is to be retrive"
 
-        Returns:
-            str: Returns "No data available" if there exists no record with the given name and house combination
-
-            if the arguements for name and house combination exists, in that case we can retrieve the other details:
-                > of the visitor such as the time of entry
-                > time of exit(if visitor has left the apartment)
-                > if the visitor is still inside the complex
-                > if the visitor entry has been rejected
-        """
-        query_s = "SELECT * FROM %s.%s WHERE name='%s' AND house='%s'" % (
-            l[3], self.aptname, self.name, self.house)
+        # query_s = "SELECT * FROM %s.%s WHERE name='%s' AND house='%s'" % (
+        #     l[3], self.aptname, self.name, self.house)
+        query_s = "SELECT * FROM %s.%s WHERE name = '%s'" % (
+            l[3], self.aptname, self.name)
         cursor.execute(query_s)
         record = cursor.fetchall()
         if record == []:
@@ -216,11 +183,7 @@ class Visitor:
 # Function to check who all are inside
 # This function also creates an interface to show the graphical output in the app window in the form of a table
 def status_in(aptname=str):
-    """Return the records in a tabulated manner of only those who are still inside
 
-    Args:
-        aptname (str, optional): Apartment name. Defaults to str.
-    """
     coln = ['Visitor', 'House', 'Reason', 'Entry']
     df = pd.DataFrame(columns=coln)
     query_i = "SELECT * FROM %s.%s WHERE `status`=1;" % (l[3], aptname)
@@ -268,7 +231,39 @@ def constnt():
     app_title.grid(row=0, pady=20, padx=0, columnspan=2)
 
 
+# SMTP service to send email notifications for new visitors
+def vis_notif(aptname=str, name=str, reason=str, house=str, request=str):
+    port = 465  # For SSL
+    smtp_server = "smtp.gmail.com"
+    sender_email = "bwaklog@gmail.com"
+    reciever_email = "bwaklog@gmail.com"
+    password = 'tthf evvx ilva mxxv'
+
+    msg = ""
+
+    if request == "approve":
+        msg = "You have approved the entry of %s to house %s in apartment %s for %s" % (
+            name, house, aptname, reason)
+
+    elif request == "denyy":
+        msg = "You have denied the entry of %s to house %s in apartment %s for %s" % (
+            name, house, aptname, reason)
+
+    elif request == "exit":
+        msg = "%s has left the association" % (name)
+
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+        server.login(sender_email, password)
+        server.sendmail(sender_email, reciever_email, msg)
+
+    print("msg sent")
+
+
+# --------------------------------------------------------------------------
 # Interface for start screen
+
+
 def STARTSRC():
     for i in app.winfo_children():
         i.destroy()
@@ -377,6 +372,8 @@ def ADDVIS(apt=str):
         print(name_info, house_info, reason_info)
         add_rec(aptname=apt, name=name_info, house=house_info,
                 reason=reason_info, accreg=1, status=1)
+        vis_notif(aptname=apt, name=name_info, reason=reason_info,
+                  house=house_info,  request='approve')
         print("Record has been added")
         print("Exiting to Home screen")
         HOMESCR(apt=apt)
