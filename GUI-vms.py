@@ -2,7 +2,6 @@ from tkinter import simpledialog, messagebox
 from tkinter import *
 import tkinter as tk
 from unicodedata import name
-from PIL import Image, ImageTk
 
 import database as db
 

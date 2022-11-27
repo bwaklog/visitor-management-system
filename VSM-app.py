@@ -8,13 +8,14 @@ Repository : visitor-management-system
 Created on : 19th October 2021
 '''
 
-# Modules necessary for the project
-from tkinter import *
 import os
-import mysql.connector as mysql
-import pandas as pd
 import smtplib
 import ssl
+import tkinter
+from tkinter import *
+from tkinter.messagebox import askyesno
+import mysql.connector as mysql
+import pandas as pd
 
 
 # Function to clear the terminal
@@ -27,7 +28,7 @@ clear_console()
 
 # Defining the windown using tkinter
 app = Tk()
-app.title('VSM')
+app.title('ETALY')
 
 # Getting the details of the configuration for using MySQL(hostname, username, password and database being used)
 with open('config.txt', 'r') as f:
@@ -148,7 +149,9 @@ def remove(aptname=str, name=str, house=str):
     print('Stage 1')
     cursor.execute(query_s)
     record = cursor.fetchall()
-    record = record[0]
+    print(record)
+    record = record[-1]
+    print(record)
     if record[-1] == 1:
         query_r = "UPDATE `%s`.`%s` SET `fdate` = NOW(), `status` = '0' WHERE name='%s' AND house='%s'" % (
             l[3], aptname, name, house)
@@ -164,66 +167,31 @@ class Visitor:
         self.name = name
         self.house = house
 
-    def get_data(self):  # sourcery skip: remove-unnecessary-else
+    def get_info(self, data):
 
-        # query_s = "SELECT * FROM %s.%s WHERE name='%s' AND house='%s'" % (
-        #     l[3], self.aptname, self.name, self.house)
-        query_s = "SELECT * FROM %s.%s WHERE name = '%s'" % (
-            l[3], self.aptname, self.name)
+        query_s = "SELECT * FROM %s.%s WHERE name='%s'" % (
+            db.database, self.aptname, self.name)
         cursor.execute(query_s)
-        record = cursor.fetchall()
-        if record == []:
-            return print("No data available")
-        else:
-            record = record[0]
-            vname, vhouse, reason, entry, ext, accreg, status = record[1:]
-            # print(vname, vhouse, reason, entry, ext, accreg, status)
+
+        record = cursor.fetchall()[-1]
+
+        if data == "name":
+            return record[1]
+        elif data == "house":
+            return record[2]
+        elif data == "reason":
+            return record[3]
+        elif data == "itime":
+            return record[4]
+        elif data == "otime":
+            return record[5]
+        elif data == "accreg":
+            return record[6]
+        elif data == "all":
+            return record
 
 
-# Function to check who all are inside
-# This function also creates an interface to show the graphical output in the app window in the form of a table
-def status_in(aptname=str):
-
-    coln = ['Visitor', 'House', 'Reason', 'Entry']
-    df = pd.DataFrame(columns=coln)
-    query_i = "SELECT * FROM %s.%s WHERE `status`=1;" % (l[3], aptname)
-    cursor.execute(query_i)
-    records = cursor.fetchall()
-    for record in records:
-        print(record)
-        name, house, reason, entry = record[1], record[2], record[3], record[4]
-        df.loc[len(df.index)] = [name, house, reason, entry]
-    print(df)
-
-    for wid in app.winfo_children():
-        wid.destroy()
-
-    constnt()
-
-    cols = ['Name', 'House', 'Reason', 'Entry Time']
-    for c in range(len(cols)):
-        col = Label(app, text=cols[c])
-        col.grid(row=1, column=c)
-
-    i = 2
-    records = list(records)
-    for record in records:
-        record = record[1:5]
-        record = list(record)
-        for j in range(len(record)):
-            e = Entry(app, width=10, fg='blue')
-            e.grid(row=i, column=j, ipadx=26)
-            e.insert(END, record[j])
-        i = i + 1
-
-    def ext_home():
-        HOMESCR(apt=aptname)
-
-    btn = Button(app, text='Exit Home', command=ext_home, width=26).grid(
-        row=i, pady=5, columnspan=len(records[0]))
-
-
-# Logo + App Title which is used in all screens
+# App Title which is used in all screens
 def constnt():
     # consistent GUI
     app_title = Label(app, text='ETALY', font=('Mono', 40))
@@ -245,7 +213,7 @@ def vis_notif(aptname=str, name=str, reason=str, house=str, request=str):
         msg = "You have approved the entry of %s to house %s in apartment %s for %s" % (
             name, house, aptname, reason)
 
-    elif request == "denyy":
+    elif request == "deny":
         msg = "You have denied the entry of %s to house %s in apartment %s for %s" % (
             name, house, aptname, reason)
 
@@ -261,9 +229,9 @@ def vis_notif(aptname=str, name=str, reason=str, house=str, request=str):
 
 
 # --------------------------------------------------------------------------
+
+
 # Interface for start screen
-
-
 def STARTSRC():
     for i in app.winfo_children():
         i.destroy()
@@ -370,13 +338,27 @@ def ADDVIS(apt=str):
         house_info = house.get()
         reason_info = reason.get()
         print(name_info, house_info, reason_info)
-        add_rec(aptname=apt, name=name_info, house=house_info,
-                reason=reason_info, accreg=1, status=1)
-        vis_notif(aptname=apt, name=name_info, reason=reason_info,
-                  house=house_info,  request='approve')
-        print("Record has been added")
-        print("Exiting to Home screen")
-        HOMESCR(apt=apt)
+
+        accreg = askyesno(title='House %s' % (
+            house_info), message="Do you want to accept the entry of %s" % (name_info))
+
+        if accreg:
+            add_rec(aptname=apt, name=name_info, house=house_info,
+                    reason=reason_info, accreg=1, status=1)
+            vis_notif(aptname=apt, name=name_info, reason=reason_info,
+                      house=house_info,  request='approve')
+            print("Record has been added")
+            print("Exiting to Home screen")
+            HOMESCR(apt=apt)
+            tkinter.messagebox.showinfo(
+                "Confirmed entry", "Entry has been approved")
+
+        else:
+            HOMESCR(apt=apt)
+            tkinter.messagebox.showinfo(
+                "Entry Denied", "Entry has been denied")
+            vis_notif(aptname=apt, name=name_info, reason=reason_info,
+                      house=house_info, request='deny')
 
     nl = Label(app, text='Visitor Name :')
     nl.grid(row=1, column=0, padx=5)
@@ -429,14 +411,18 @@ def REMVIS(apt=str):
     he.grid(row=2, column=1, padx=5)
 
     def rem_visi():
+        vis = Visitor(aptname=apt, name=ne.get(), house=he.get())
+        reason = vis.get_info("reason")
         remove(aptname=apt, name=ne.get(), house=he.get())
+        vis_notif(aptname=apt, name=ne.get(), reason=reason,
+                  house=he.get(), request="exit")
         print("Executed")
         HOMESCR(apt=apt)
 
     def back():
         HOMESCR(apt=apt)
 
-    bck = Button(app, text='Add Visitor', width=26, command=rem_visi)
+    bck = Button(app, text='Remove Visitor', width=26, command=rem_visi)
     bck.grid(row=5, columnspan=2, pady=1, padx=5)
     bck = Button(app, text='Back', width=26, command=back)
     bck.grid(row=6, columnspan=2, pady=1, padx=5)
@@ -453,7 +439,50 @@ def HISTORY(apt):
 
 # Filters out the visiting history and returns a tabulated result of the people still inside the association
 def VWINSD(apt):
-    status_in(aptname=apt)
+    # status_in(aptname=apt)
+    coln = ['Visitor', 'House', 'Reason', 'Entry']
+    df = pd.DataFrame(columns=coln)
+    query_i = "SELECT * FROM %s.%s WHERE `status`=1;" % (l[3], apt)
+    cursor.execute(query_i)
+    records = cursor.fetchall()
+
+    if len(records) >= 1:
+        for record in records:
+            print(record)
+            name, house, reason, entry = record[1], record[2], record[3], record[4]
+            df.loc[len(df.index)] = [name, house, reason, entry]
+        print(df)
+
+        for wid in app.winfo_children():
+            wid.destroy()
+
+        constnt()
+
+        cols = ['Name', 'House', 'Reason', 'Entry Time']
+        for c in range(len(cols)):
+            col = Label(app, text=cols[c])
+            col.grid(row=1, column=c)
+
+        i = 2
+        records = list(records)
+        for record in records:
+            record = record[1:5]
+            record = list(record)
+            for j in range(len(record)):
+                e = Entry(app, width=10, fg='blue')
+                e.grid(row=i, column=j, ipadx=26)
+                e.insert(END, record[j])
+            i = i + 1
+
+        def ext_home():
+            HOMESCR(apt=apt)
+
+        btn = Button(app, text='Exit Home', command=ext_home, width=26).grid(
+            row=i, pady=5, columnspan=len(records[0]))
+
+    else:
+        tkinter.messagebox.showinfo(
+            "Status Check", "There are no visiors inside the association")
 
 
 # Initiate app from Start Screen - to enter apartment name
