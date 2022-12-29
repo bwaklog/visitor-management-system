@@ -41,14 +41,22 @@ db = mysql.connect(
     host=l[0],
     user=l[1],
     passwd=l[2],
-    database=l[3]
+    # database=l[3]
 )
 
 # Defining the cursor to perform SQL commands in MySQL
 cursor = db.cursor()
 
+cr = "create database if not exists VSM"
+cursor.execute(cr)
+cursor.execute("commit")
+q = "use VSM"
+cursor.execute(q)
+
 
 # Function to create a new table for an apartment in the database
+
+
 def crt_apt(aptname=str):
 
     query = "CREATE TABLE " + aptname + " (vsid INT NOT NULL AUTO_INCREMENT\
@@ -87,7 +95,7 @@ coln = ['Name', 'House No', 'Reason', 'Entry', 'Exit', 'Accreg', 'Status']
 def show_rec(aptname=str):
 
     df = pd.DataFrame(columns=coln)
-    query = "SELECT * FROM " + l[3] + "." + aptname + ""
+    query = "SELECT * FROM VSM." + aptname + ""
     cursor.execute(query)
     records = cursor.fetchall()
     for record in records:
@@ -134,9 +142,8 @@ def show_rec(aptname=str):
 # Add a visitor to a table
 def add_rec(aptname=str, name=str, house=str, reason=str, accreg=bool, status=bool):
 
-    query = "INSERT INTO `%s`.`%s` (`name`, `house`, `reason`, `idate`, `fdate`, `accreg`, `status`) VALUES ('%s',\
-     '%s', '%s', NOW(), NULL, %d, %d)" % (
-        l[3], aptname, name, house, reason, accreg, status)
+    query = "INSERT INTO VSM.`%s` (`name`, `house`, `reason`, `idate`, `fdate`, `accreg`, `status`) VALUES ('%s',\
+     '%s', '%s', NOW(), NULL, %d, %d)" % (aptname, name, house, reason, accreg, status)
     cursor.execute(query)
     db.commit()
 
@@ -144,8 +151,8 @@ def add_rec(aptname=str, name=str, house=str, reason=str, accreg=bool, status=bo
 # Add the time of exit of a visitor - removing a visitor from the apartment
 def remove(aptname=str, name=str, house=str):
 
-    query_s = "SELECT * FROM %s.%s WHERE name='%s' AND house='%s'" % (
-        l[3], aptname, name, house)
+    query_s = "SELECT * FROM VSM.%s WHERE name='%s' AND house='%s'" % (
+        aptname, name, house)
     print('Stage 1')
     cursor.execute(query_s)
     record = cursor.fetchall()
@@ -153,8 +160,8 @@ def remove(aptname=str, name=str, house=str):
     record = record[-1]
     print(record)
     if record[-1] == 1:
-        query_r = "UPDATE `%s`.`%s` SET `fdate` = NOW(), `status` = '0' WHERE name='%s' AND house='%s'" % (
-            l[3], aptname, name, house)
+        query_r = "UPDATE VSM.`%s` SET `fdate` = NOW(), `status` = '0' WHERE name='%s' AND house='%s'" % (
+            aptname, name, house)
         print('Stage 2')
         cursor.execute(query_r)
         db.commit()
@@ -169,8 +176,8 @@ class Visitor:
 
     def get_info(self, data):
 
-        query_s = "SELECT * FROM %s.%s WHERE name='%s'" % (
-            db.database, self.aptname, self.name)
+        query_s = "SELECT * FROM VSM.%s WHERE name='%s'" % (
+            self.aptname, self.name)
         cursor.execute(query_s)
 
         record = cursor.fetchall()[-1]
@@ -442,7 +449,7 @@ def VWINSD(apt):
     # status_in(aptname=apt)
     coln = ['Visitor', 'House', 'Reason', 'Entry']
     df = pd.DataFrame(columns=coln)
-    query_i = "SELECT * FROM %s.%s WHERE `status`=1;" % (l[3], apt)
+    query_i = "SELECT * FROM VSM.%s WHERE `status`=1;" % (apt)
     cursor.execute(query_i)
     records = cursor.fetchall()
 
