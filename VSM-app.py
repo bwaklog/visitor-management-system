@@ -215,7 +215,7 @@ def constnt():
 
 # SMTP service to send email notifications for new visitors
 def vis_notif(aptname=str, name=str, reason=str, house=str, request=str):
-    port = 465  # For SSL
+    # port = 465  # For SSL
     smtp_server = "smtp.gmail.com"
     sender_email = "bwaklog@gmail.com"
     reciever_email = "bwaklog@gmail.com"
@@ -234,10 +234,12 @@ def vis_notif(aptname=str, name=str, reason=str, house=str, request=str):
     elif request == "exit":
         msg = "%s has left the association" % (name)
 
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
-        server.login(sender_email, password)
-        server.sendmail(sender_email, reciever_email, msg)
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.ehlo()
+    server.starttls()
+    server.login(sender_email, password)
+    server.sendmail(sender_email, reciever_email, msg)
+    server.quit()
 
     print("msg sent")
 
@@ -256,8 +258,6 @@ def STARTSRC():
         aptinfo = apt.get()
         str(aptinfo).replace(" ", "")
         chk_tbl(aptname=aptinfo)
-        # print("Fetching table for", aptinfo)
-        # HOMESCR(apt=aptinfo)
 
     l1 = Label(app, text='Apartment Name :')
     l1.grid(row=1, column=0, padx=5)
