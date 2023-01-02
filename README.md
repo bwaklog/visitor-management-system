@@ -1,4 +1,4 @@
-# visitor-management-system (version 5.6.0)
+# visitor-management-system (version 5.7.0)
 💻 Visitor Management System, created for school project
 
 #### 👉 VSM-app.py(file) holds the source code for the VSM
