@@ -98,45 +98,52 @@ def show_rec(aptname=str):
     query = "SELECT * FROM VSM." + aptname + ""
     cursor.execute(query)
     records = cursor.fetchall()
-    for record in records:
-        name, house, reason, entry, ext, accreg, stat = record[1], record[2], record[3], record[4], record[5], \
-            record[6], record[7]
-        print(record)
-        if stat == 1:
-            ext = 'Still Inside'
-            print("Not inside")
-        df.loc[len(df.index)] = [name, house, reason, entry, ext, accreg, stat]
 
-    print(df)
+    if len(records) >= 1:
+        for record in records:
+            name, house, reason, entry, ext, accreg, stat = record[1], record[2], record[3], record[4], record[5], \
+                record[6], record[7]
+            print(record)
+            if stat == 1:
+                ext = 'Still Inside'
+                print("Not inside")
+            df.loc[len(df.index)] = [name, house,
+                                     reason, entry, ext, accreg, stat]
 
-    for wid in app.winfo_children():
-        wid.destroy()
+        print(df)
 
-    constnt()
+        for wid in app.winfo_children():
+            wid.destroy()
 
-    cols = ['Name', 'House', 'Reason', 'Entry Time', 'Exit Time']
-    for c in range(len(cols)):
-        col = Label(app, text=cols[c])
-        col.grid(row=1, column=c)
+        constnt()
 
-    i = 2
-    records = list(records)
-    for record in records:
-        record = record[1:6]
-        record = list(record)
-        for j in range(len(record)):
-            e = Entry(app, width=10, fg='blue')
-            e.grid(row=i, column=j, ipadx=26)
-            if str(record[j]) == 'None':
-                record[j] = 'Still Inside'
-            e.insert(END, record[j])
-        i = i + 1
+        cols = ['Name', 'House', 'Reason', 'Entry Time', 'Exit Time']
+        for c in range(len(cols)):
+            col = Label(app, text=cols[c])
+            col.grid(row=1, column=c)
 
-    def ext_home():
-        HOMESCR(apt=aptname)
+        i = 2
+        records = list(records)
+        for record in records:
+            record = record[1:6]
+            record = list(record)
+            for j in range(len(record)):
+                e = Entry(app, width=10, fg='blue')
+                e.grid(row=i, column=j, ipadx=26)
+                if str(record[j]) == 'None':
+                    record[j] = 'Still Inside'
+                e.insert(END, record[j])
+            i = i + 1
 
-    btn = Button(app, text='Exit Home', command=ext_home, width=26).grid(
-        row=i, pady=5, columnspan=len(records[0]))
+        def ext_home():
+            HOMESCR(apt=aptname)
+
+        btn = Button(app, text='Exit Home', command=ext_home, width=26).grid(
+            row=i, pady=5, columnspan=len(records[0]))
+
+    else:
+        tkinter.messagebox.showinfo(
+            "History Check", "There are no visitors inside the association!")
 
 
 # Add a visitor to a table
@@ -308,7 +315,6 @@ def HOMESCR(apt=str):
 
     def his():
         clear_console()  # can comment outr
-        show_rec(aptname=apt)
         HISTORY(apt=apt)
 
     def insd():
