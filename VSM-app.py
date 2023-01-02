@@ -1,6 +1,6 @@
 '''
 VISITOR MANAGEMENT SYSTEM
-version 5.0
+version 5.6
 ===================================================================================================================
 Author     : Aditya Hegde
 Github     : bwaklog
@@ -158,7 +158,7 @@ def add_rec(aptname=str, name=str, house=str, reason=str, accreg=bool, status=bo
 # Add the time of exit of a visitor - removing a visitor from the apartment
 def remove(aptname=str, name=str, house=str):
 
-    query_s = "SELECT * FROM VSM.%s WHERE name='%s' AND house='%s'" % (
+    query_s = "SELECT * FROM VSM.%s WHERE name='%s' AND house='%s' AND status=1" % (
         aptname, name, house)
     print('Stage 1')
     cursor.execute(query_s)
@@ -167,7 +167,7 @@ def remove(aptname=str, name=str, house=str):
     record = record[-1]
     print(record)
     if record[-1] == 1:
-        query_r = "UPDATE VSM.`%s` SET `fdate` = NOW(), `status` = '0' WHERE name='%s' AND house='%s'" % (
+        query_r = "UPDATE VSM.`%s` SET `fdate` = NOW(), `status` = '0' WHERE name='%s' AND house='%s' AND status=1" % (
             aptname, name, house)
         print('Stage 2')
         cursor.execute(query_r)
